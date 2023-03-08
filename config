@@ -1,0 +1,324 @@
+firewall {
+    name DMZ-to-LAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+        rule 10 {
+            action accept
+            description "wazuh agent communications with wazuh server"
+            destination {
+                address 172.16.200.10
+                port 1514,1515
+            }
+            protocol tcp
+        }
+    }
+    name DMZ-to-WAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+    }
+    name DNZ-to-WAN {
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+    }
+    name LAN-to-DMZ {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+        rule 10 {
+            action accept
+            description "Allow http from LAN-to-DMZ"
+            destination {
+                address 172.16.50.3
+                port 80
+            }
+            protocol tcp
+        }
+        rule 20 {
+            action accept
+            destination {
+                port 22
+            }
+            protocol tcp
+            source {
+                address 172.16.150.10
+            }
+        }
+        rule 30 {
+            action accept
+            description "ssh from mgmt01 to DMZ"
+            destination {
+                address 172.16.50.0/29
+                port 22
+            }
+            protocol tcp
+            source {
+                address 172.16.150.10
+            }
+        }
+    }
+    name LAN-to-WAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+        }
+    }
+    name WAN-to-DMZ {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+        rule 10 {
+            action accept
+            description "Allow HTTP from WAN to DMZ"
+            destination {
+                address 172.16.50.3
+                port 80
+            }
+            protocol tcp
+        }
+        rule 20 {
+            action accept
+            description "Allow SSH from WAN to DMZ"
+            destination {
+                address 172.16.50.4
+                port 22
+            }
+            protocol tcp
+        }
+    }
+    name WAN-to-LAN {
+        default-action drop
+        enable-default-log
+        rule 1 {
+            action accept
+            state {
+                established enable
+            }
+        }
+    }
+}
+interfaces {
+    ethernet eth0 {
+        address 10.0.17.130/24
+        address 10.0.17.110/24
+        description SEC350-01-WAN
+        hw-id 00:50:56:a1:1f:e3
+    }
+    ethernet eth1 {
+        address 172.16.50.2/29
+        address 172.17.50.2/29
+        description ZACH-DMZ
+        hw-id 00:50:56:a1:cd:2a
+    }
+    ethernet eth2 {
+        address 172.16.150.2/24
+        description ZACH-LAN
+        hw-id 00:50:56:a1:79:1c
+    }
+    loopback lo {
+    }
+}
+nat {
+    destination {
+        rule 10 {
+            description "HTTP -> WEB01"
+            destination {
+                port 80
+            }
+            inbound-interface eth0
+            protocol tcp
+            translation {
+                address 172.16.50.3
+                port 80
+            }
+        }
+        rule 20 {
+            description WAN->JUMP
+            destination {
+                port 22
+            }
+            inbound-interface eth0
+            protocol tcp
+            translation {
+                address 172.16.50.4
+                port 22
+            }
+        }
+    }
+    source {
+        rule 10 {
+            description "NAT FROM DMZ to WAN"
+            outbound-interface eth0
+            source {
+                address 172.16.50.0/29
+            }
+            translation {
+                address masquerade
+            }
+        }
+        rule 20 {
+            description "NAT FROM LAN to WAN"
+            outbound-interface eth0
+            source {
+                address 172.16.150.0/24
+            }
+            translation {
+                address masquerade
+            }
+        }
+        rule 30 {
+            description "NAT FROM MGMT --> WAN"
+            outbound-interface eth0
+            source {
+                address 172.16.200.0/28
+            }
+            translation {
+                address masquerade
+            }
+        }
+    }
+}
+protocols {
+    rip {
+        interface eth2 {
+        }
+        network 172.16.50.0/29
+    }
+    static {
+        route 0.0.0.0/0 {
+            next-hop 10.0.17.2 {
+            }
+        }
+    }
+}
+service {
+    dns {
+        forwarding {
+            allow-from 172.16.50.0/29
+            allow-from 172.16.150.0/24
+            listen-address 172.16.50.2
+            listen-address 172.16.150.2
+            listen-address 172.16.150.10
+            system
+        }
+    }
+    ssh {
+        listen-address 172.16.150.2
+    }
+}
+system {
+    config-management {
+        commit-revisions 100
+    }
+    conntrack {
+        modules {
+            ftp
+            h323
+            nfs
+            pptp
+            sip
+            sqlnet
+            tftp
+        }
+    }
+    console {
+        device ttyS0 {
+            speed 115200
+        }
+    }
+    host-name fw01-zach
+    login {
+        user vyos {
+            authentication {
+                encrypted-password ****************
+                plaintext-password ****************
+            }
+        }
+    }
+    name-server 10.0.17.2
+    ntp {
+        server time1.vyos.net {
+        }
+        server time2.vyos.net {
+        }
+        server time3.vyos.net {
+        }
+    }
+    syslog {
+        global {
+            facility all {
+                level info
+            }
+            facility protocols {
+                level debug
+            }
+        }
+    }
+}
+zone-policy {
+    zone DMZ {
+        from LAN {
+            firewall {
+                name LAN-to-DMZ
+            }
+        }
+        from WAN {
+            firewall {
+                name WAN-to-DMZ
+            }
+        }
+        interface eth1
+    }
+    zone LAN {
+        from DMZ {
+            firewall {
+                name DMZ-to-LAN
+            }
+        }
+        from WAN {
+            firewall {
+                name WAN-to-LAN
+            }
+        }
+        interface eth2
+    }
+    zone WAN {
+        from DMZ {
+            firewall {
+                name DMZ-to-WAN
+            }
+        }
+        from LAN {
+            firewall {
+                name LAN-to-WAN
+            }
+        }
+        interface eth0
+    }
+}
