@@ -28,7 +28,7 @@ firewall {
             }
         }
     }
-    name DNZ-to-WAN {
+    name DMZ-to-WAN {
         rule 1 {
             action accept
             state {
