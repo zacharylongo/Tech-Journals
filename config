@@ -28,14 +28,6 @@ firewall {
             }
         }
     }
-    name DMZ-to-WAN {
-        rule 1 {
-            action accept
-            state {
-                established enable
-            }
-        }
-    }
     name LAN-to-DMZ {
         default-action drop
         enable-default-log
