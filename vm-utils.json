@@ -1,0 +1,60 @@
+import getpass
+from pyVim.connect import SmartConnect
+import ssl
+
+def connect_to_vcenter(vcenter_host, username, password):
+    try:
+        s = ssl.SSLContext(ssl.PROTOCOL_TLSv1_2)
+        s.verify_mode = ssl.CERT_NONE
+        si = SmartConnect(host=vcenter_host, user=username, pwd=password, sslContext=s)
+        return si
+    except Exception as e:
+        print(f"Error connecting to vCenter: {str(e)}")
+        return None
+
+def get_vm_info_by_name(si, vm_name):
+    if si is not None:
+        content = si.RetrieveContent()
+        view = content.viewManager.CreateContainerView(content.rootFolder, [vim.VirtualMachine], True)
+
+        vm_info = []
+        for vm in view.view:
+            if vm_name in vm.name:
+                vm_power_state = vm.runtime.powerState
+                vm_num_cpus = vm.config.hardware.numCPU
+                vm_memory_gb = vm.config.hardware.memoryMB / 1024
+                vm_ip_address = vm.summary.guest.ipAddress
+                vm_info.append({
+                    'Name': vm.name,
+                    'Power State': vm_power_state,
+                    'Number of CPUs': vm_num_cpus,
+                    'Memory (GB)': vm_memory_gb,
+                    'IP Address': vm_ip_address
+                })
+
+        view.Destroy()
+        return vm_info
+    else:
+        return None
+
+if __name__ == "__main__":
+    vcenter_host = "vcenter.zach.local"
+    username = "zach-adm"
+    password = getpass.getpass("Enter your vCenter password: ")
+
+    si = connect_to_vcenter(vcenter_host, username, password)
+
+    if si is not None:
+        vm_name_to_search = "Your_VM_Name"  # Replace with the VM name you're looking for
+        vm_info = get_vm_info_by_name(si, vm_name_to_search)
+        if vm_info:
+            for vm in vm_info:
+                print("VM Name: ", vm['Name'])
+                print("Power State: ", vm['Power State'])
+                print("Number of CPUs: ", vm['Number of CPUs'])
+                print("Memory (GB): ", vm['Memory (GB)'])
+                print("IP Address: ", vm['IP Address'])
+        else:
+            print(f"No VM found with the name: {vm_name_to_search}")
+    else:
+        print("Could not connect to vCenter.")
