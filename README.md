@@ -2,7 +2,7 @@
 
 ## 🚀 About Me
 
-Hello! I'm [Zach], a tech enthusiast with a focus on Smart Building Technology, Enterprise Risk Management, and OSINT.
+Hello! I'm Zach, a tech enthusiast with a focus on Smart Building Technology, Enterprise Risk Management, and Open-Source Intelligence (OSINT).
 
 ## 💼 Current Job
 
@@ -18,7 +18,7 @@ Hello! I'm [Zach], a tech enthusiast with a focus on Smart Building Technology, 
 
 ## 🌐 Interests
 
-- **Smart Building Technology:** Exploring the integration of technology into architecture for efficient buildings.
+- **Smart Building Technology:** Exploring the integration of IOT / Automation technology into architecture for efficient buildings.
   
 - **Risk Management:** Ensuring robust cybersecurity measures to mitigate digital risks.
 
@@ -28,7 +28,7 @@ Hello! I'm [Zach], a tech enthusiast with a focus on Smart Building Technology, 
 
 Feel free to browse through my projects and labs completed during my time at Champlain College. They reflect my academic journey and growth in the tech field.
 
-Feel free to explore, and reach out for any questions or collaboration opportunities!
+Reach out for any questions or collaboration opportunities!
 
 ## 🌐 Connect with Me
 
