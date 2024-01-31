@@ -1,10 +1,10 @@
-# 👋 [Zachary Longo]'s GitHub
+# 👋 Zachary Longo's GitHub
 
 ## 🚀 About Me
 
 Hello! I'm Zach, a tech enthusiast with a focus on Smart Building Technology, Enterprise Risk Management, and Open-Source Intelligence (OSINT).
 
-## 💼 Current Job
+## 💼 Current Employment
 
 - **Position:** [AI/Smart Building Researcher]
 - **Company:** [Com|Code GmbH]
