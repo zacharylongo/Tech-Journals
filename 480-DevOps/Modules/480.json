@@ -1,0 +1,9 @@
+{
+    "vcenter_server" : "vcenter.zach.local",
+    "vm_folder" : "BASEVM",
+    "esxi_host" : "192.168.7.37",
+    "default_network" : "480-WAN",
+    "default_datastore" : "datastore1-super27",
+    "snaptshot" : "Base"
+
+}
