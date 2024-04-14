@@ -11,13 +11,13 @@ function Show-Menu {
 }
 
 # import module
-import-Module -Name /home/zach/Tech-Journals/480-DevOps/modules/480-Utils1/480-utils1.psm1 -Force
+import-Module -Name /home/admin2/480/Tech-Journals/480-DevOps/Modules/480-utils1.psm1 -Force
 
 # present banner
 480Banner
 
 # load json as conf
-$conf = Get-480Config -config_path "/home/zach/Tech-Journals/480-DevOps/480.json"
+$conf = Get-480Config -config_path "/home/admin2/480/Tech-Journals/480-DevOps/Modules/480.json"
 
 # Connect to vCenter
 480connect -server $conf.vcenter_server
