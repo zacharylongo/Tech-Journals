@@ -1,0 +1,20 @@
+rocky:
+  hosts:
+    10.0.5.75:
+      hostname: rocky1
+      lan_ip: 10.0.5.10
+    10.0.5.76:
+      hostname: rocky2
+      lan_ip: 10.0.5.11
+    10.0.5.77:
+      hostname: rocky3
+      lan_ip: 10.0.5.12
+   vars:
+     device: ens33
+   vars:
+    public_key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAACAQCviw7kFvsDYjByfgHUNe+IZs5iGMBHj/TBfqWKXTwBdKpgh9HBgBZecAnUzo3Ur9cEjA7BLa0OUz4GjRfzunN5yhQ2Ehm4Xj1pNp762lp4vY6F1itv0jyphoMPkL2U0OxvbtpI8LU4hMGnINHkJPNtVdW5RkJCP4mMC21VZhkkPG6ICYq70Bi5/TLLRDqGBLe+XdkNILcGvGQc7Kk5PbDw1IRDTSKauTfIPJ8bHCZqfjAmKspROijUEYwn6L40QCLyhKtX4PHUkmDZ+pQ4v+AtQbGKW4Ctz+SPeRSt+lTYwhlbByHoRimj5RRd9kVCSjcW0TuCEVJ2s+YK0h6slKNGuhtmQAlyhI8xNMrVuResETMZT3yl2TOec77C92F+3Xa6LI2LEGou5kYiv1tUuRaGW9WziwGUf4qWehCW4SrcMZaDBbV1DYNLrMI+8Q0Q/YQj38gHa0ijOya9Pvf1lVxLAJKuHMxGH+hx+uEJmylq10oJQvW6liN0Vh3JFnsP/lg/cFqVuuvYL+AMBn3nd2QFaTfLh2HxdGvjkmdoSyQjaZFDgSyY5sBmhnm+MWWLULrEyVmGAmWqhGdD7KSVTSR+JSJcKAw6N2mhzzbXlWMAXMO1HhgLgo3deMCRf0mL25DjmflikKXnKewRgryZl41jFKzF2F/1tSgOoY1Aorh0OQ== admin2@xubuntu-wan"
+    ansible_user: zach-adm
+    prefix: 24
+    gateway: 10.0.5.2
+    name_server: 10.0.5.5
+    domain: blue.local

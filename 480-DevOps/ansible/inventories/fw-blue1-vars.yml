@@ -1,0 +1,40 @@
+linux:
+  hosts:
+  children:
+    rocky:
+      hosts:
+        #fill in with rocky IP:
+          hostname: rocky1
+          lan_ip: 10.0.5.10
+        #fill in with rocky IP:
+          hostname: rocky2
+          lan_ip: 10.0.5.11
+        #fill in with rocky IP:
+          hostname: rocky3
+          lan_ip: 10.0.5.12
+      vars:
+        device: ens34
+    ubuntu:
+      hosts:
+        #fill in with ubuntu IP:
+          hostname: ubuntu1
+          lan_ip: 10.0.5.30
+        #fill in with ubuntu IP:
+          hostname: ubuntu2
+          lan_ip: 10.0.5.31
+      vars:
+        device: ens33
+    impulse:
+      hosts: 
+        10.0.5.30:
+          hostname: impulse
+      vars:
+        device: ens33
+        ip: 10.0.5.30
+  vars:
+    ansible_python_interpreter: /usr/bin/python3
+    ansible_connection: network_cli
+    ansible_network_os: vyos
+    ansible_user: vyos
+
+
