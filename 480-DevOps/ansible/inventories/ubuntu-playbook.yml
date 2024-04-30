@@ -1,48 +1,48 @@
-- name: ubuntu config
+- name: ubuntu playbook  # Descriptive name for the playbook
   hosts: ubuntu
   tasks:
-      - name: set the hostname
+    - name: Set Hostname  # Task to set the hostname
       hostname:
         name: "{{ hostname }}"
       become: yes
 
-    - name: add host to hosts file
+    - name: Add Host Entry  # Task to add hostname to hosts file
       lineinfile:
         path: /etc/hosts
         line: "127.0.1.1  {{ hostname }}"
       become: yes
-    
-    - name:.ssh directory creation
+  
+    - name: Create .ssh Directory  # Task to create the .ssh directory
       file:
         path: "/home/{{ ansible_user }}/.ssh"
         state: directory
         mode: 0700
 
-    - name: create the authorized_keys file
+    - name: Ensure Authorized Keys File Existence  # Task to ensure the existence of the authorized_keys file
       file:
         path: "/home/{{ ansible_user }}/.ssh/authorized_keys"
         state: touch
         mode: 0644
 
-    - name: key block copy and append
+    - name: Copy SSH Public Key to Authorized Keys  # Task to copy SSH public key to authorized_keys
       blockinfile:
         dest: "/home/{{ ansible_user }}/.ssh/authorized_keys"
         block: "{{ public_key }}"
-     
-    - name: create sudoers dropin file
+
+    - name: Create Sudoers Drop-in File  # Task to create sudoers drop-in file
       file:
         path: /etc/sudoers.d/480
         state: touch
         mode: 0440
       become: yes
 
-    - name: create a drop in entry in /etc/sudoers.d/480
+    - name: Add Sudo Permissions for User  # Task to add sudo permissions for user
       blockinfile:
         dest: /etc/sudoers.d/480
         block: "{{ ansible_user }}  ALL=(ALL) NOPASSWD: ALL"
       become: yes
 
-    - name: load netplan config from template
+    - name: Load Netplan Config from Template  # Task to load netplan config from template
       become: yes
       template:
         src: 00-installer-config.yaml.j2
@@ -51,14 +51,11 @@
         owner: root
         group: root
 
-    - name: restart the machine
+    - name: Restart the Server  # Task to restart the server
       shell: "sleep 10 && shutdown -r"
       become: yes
       async: 1
       poll: 0
-
-
- 
 
 
 

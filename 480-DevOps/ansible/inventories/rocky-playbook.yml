@@ -1,48 +1,48 @@
-- name: rocky config
+- name: Rocky Server Configuration  # Descriptive name for the playbook
   hosts: rocky
   tasks:
-    - name: create the .ssh directory if it is not there
+    - name: Ensure .ssh directory exists  # Task to ensure the existence of the .ssh directory
       file:
         path: "/home/{{ ansible_user }}/.ssh"
         state: directory
         mode: 0700
 
-    - name: create the authorized_keys file
+    - name: Ensure authorized_keys file exists  # Task to ensure the existence of the authorized_keys file
       file:
         path: "/home/{{ ansible_user }}/.ssh/authorized_keys"
         state: touch
         mode: 0644
 
-    - name: copy over key block and append to authorized_keys
+    - name: Add SSH public key to authorized_keys  # Task to add SSH public key to authorized_keys
       blockinfile:
         dest: "/home/{{ ansible_user }}/.ssh/authorized_keys"
         block: "{{ public_key }}"
-     
-    - name: create sudoers dropin file for 480
+
+    - name: Create sudoers drop-in file for user 480  # Task to create sudoers drop-in file for user 480
       file:
         path: /etc/sudoers.d/480
         state: touch
         mode: 0440
       become: yes
 
-    - name: create a drop in entry in /etc/sudoers.d/480
+    - name: Add sudo permissions for user 480  # Task to add sudo permissions for user 480
       blockinfile:
         dest: /etc/sudoers.d/480
         block: "{{ ansible_user }}  ALL=(ALL) NOPASSWD: ALL"
       become: yes
 
-    - name: set the hostname
+    - name: Set hostname  # Task to set the hostname
       hostname:
         name: "{{ hostname }}"
       become: yes
 
-    - name: add host to hosts file
+    - name: Add hostname to hosts file  # Task to add hostname to hosts file
       lineinfile:
         path: /etc/hosts
         line: "127.0.1.1  {{ hostname }}"
       become: yes
 
-    - name: run nmcli
+    - name: Configure network settings with nmcli  # Task to configure network settings with nmcli
       nmcli:
         conn_name: "{{ device }}"
         ip4: "{{ lan_ip }}/24"
@@ -55,8 +55,10 @@
         method4: manual
       become: yes
 
-    - name: restart the machine
-      shell: "sleep 5 && shutdown -r"
+    - name: Restart the server  # Task to restart the server
+      shell: "sleep 10 && shutdown -r"
       become: yes
       async: 1
       poll: 0
+
+
