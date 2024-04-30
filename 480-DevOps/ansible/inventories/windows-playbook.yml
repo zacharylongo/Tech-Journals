@@ -1,0 +1,57 @@
+- name: playbook
+  hosts: 10.0.5.5
+  vars_prompt:
+    - name: username
+      prompt: "Enter your username:"  # Prompt for the username
+      private: false
+      # Example: "deployer"
+    - name: admin_pass
+      prompt: "Enter your password:"  # Prompt for the password
+    - name: domain_name
+      prompt: "Enter the domain name:"  # Prompt for the domain name
+      private: false
+      # Ensure the domain name matches the desired name
+      # Example: "blue1.local"
+    - name: vm_name
+      prompt: "Enter the new VM name:"  # Prompt for the new VM name
+      private: false
+      # Example: "dc-blue1"
+
+  vars: 
+    ansible_shell_type: powershell
+  tasks:
+    - name: ADDS 
+      ansible.windows.win_powershell: 
+        script: |
+          Rename-Computer -NewName "{{ vm_name }}"  # Rename the computer to the new VM name
+
+    - name: Create new forest 
+      ansible.windows.win_domain: 
+        dns_domain_name: "{{ domain_name }}"  # Set the DNS domain name
+        safe_mode_password: "{{ admin_pass }}"  # Set the safe mode password
+      register: domain_install
+
+    - name: Reboot
+      win_reboot:
+        reboot_timeout: 300
+      when: domain_install.reboot_required
+
+    - name: Add domain admin to group
+      win_domain_group_membership:
+        name: "Domain Admins"
+        members:
+          - "{{ username }}"
+        state: present
+
+    - name: OU 
+      ansible.windows.win_powershell:
+        script: |
+          Add-OU -Identity "blue1" -Members zach-adm  # Add the OU with a specified identity and members
+          New-ADOrganizationalUnit -Name "blue1" -Path "DC=blue1,DC=local"  # Create the "blue1" OU
+          New-ADOrganizationalUnit -Name "Accounts" -Path "OU=blue1,DC=blue1,DC=local"  # Create the "Accounts" OU
+          New-ADOrganizationalUnit -Name "Groups" -Path "OU=Accounts,OU=blue1,DC=blue1,DC=local"  # Create the "Groups" OU
+          New-ADOrganizationalUnit -Name "Computers" -Path "OU=blue1,DC=blue1,DC=local"  # Create the "Computers" OU
+          New-ADOrganizationalUnit -Name "Servers" -Path "OU=Computers,OU=blue1,DC=blue1,DC=local"  # Create the "Servers" OU
+          New-ADOrganizationalUnit -Name "Workstations" -Path "OU=Computers,OU=blue1,DC=blue1,DC=local"  # Create the "Workstations" OU
+
+

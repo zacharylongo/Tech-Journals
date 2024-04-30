@@ -1,0 +1,17 @@
+# Windows Server Inventory File
+windows:
+  hosts:
+  children:    
+    ubuntu:
+      hosts:
+        10.0.5.5:
+      vars:
+        device: eth0
+
+  vars:
+    Ansible_user: zach-adm
+    prefix: 24
+    gateway: 10.0.5.2
+    name_server: 10.0.5.5
+    domain: blue1.local
+    ansible_shell_type: powershell
