@@ -9,6 +9,13 @@ rocky:
     10.0.5.77:
       hostname: rocky3
       lan_ip: 10.0.5.12
+      #Add more hosts for rocky 4-6 in case you want test boxes.
+    10.0.5.80:
+      hostname: dabuntumachine1
+      lan_ip: 10.0.5.15
+    10.0.5.81
+      hostname: dabuntumachine2
+      lan_ip: 10.05.16
    vars:
      device: ens33
    vars:
