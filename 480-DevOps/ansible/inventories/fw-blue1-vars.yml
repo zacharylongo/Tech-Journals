@@ -1,40 +1,40 @@
-linux:
+linux_setup:
   hosts:
-  children:
-    rocky:
+    rocky_group:
       hosts:
-        #fill in with rocky IP:
-          hostname: rocky1
-          lan_ip: 10.0.5.10
-        #fill in with rocky IP:
-          hostname: rocky2
-          lan_ip: 10.0.5.11
-        #fill in with rocky IP:
-          hostname: rocky3
-          lan_ip: 10.0.5.12
-      vars:
-        device: ens34
-    ubuntu:
+        rocky1:
+          ansible_host: 10.0.5.10
+          custom_device: ens34
+          is_vyos: true
+        rocky2:
+          ansible_host: 10.0.5.11
+          custom_device: ens34
+          is_vyos: true
+        rocky3:
+          ansible_host: 10.0.5.12
+          custom_device: ens34
+          is_vyos: true
+    ubuntu_group:
       hosts:
-        #fill in with ubuntu IP:
-          hostname: ubuntu1
-          lan_ip: 10.0.5.30
-        #fill in with ubuntu IP:
-          hostname: ubuntu2
-          lan_ip: 10.0.5.31
-      vars:
-        device: ens33
-    impulse:
-      hosts: 
-        10.0.5.30:
-          hostname: impulse
-      vars:
-        device: ens33
-        ip: 10.0.5.30
+        dabuntumachine1:
+          ansible_host: 10.0.5.30
+          custom_device: ens33
+          is_vyos: false
+        dabuntumachine2:
+          ansible_host: 10.0.5.31
+          custom_device: ens33
+          is_vyos: false
+    impulse_group:
+      hosts:
+        impulse_machine:
+          ansible_host: 10.0.5.30
+          custom_device: ens33
+          is_vyos: false
+          is_impulse: true
   vars:
     ansible_python_interpreter: /usr/bin/python3
+    ansible_user: vyos
     ansible_connection: network_cli
     ansible_network_os: vyos
-    ansible_user: vyos
 
 
